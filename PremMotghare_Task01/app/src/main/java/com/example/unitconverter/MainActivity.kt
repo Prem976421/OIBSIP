@@ -124,6 +124,7 @@ private fun UnitConverterApp() {
 
             InlineInputField(
                 value = inputValue,
+                unitLabel = fromUnit.displayName,
                 onValueChange = { newValue ->
                     if (newValue.isEmpty() || newValue.matches(Regex("^-?\\d*\\.?\\d*$"))) {
                         inputValue = newValue
@@ -270,6 +271,7 @@ private fun CategoryTabs(
 @Composable
 private fun InlineInputField(
     value: String,
+    unitLabel: String,
     onValueChange: (String) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -300,6 +302,16 @@ private fun InlineInputField(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color(90, 120, 120)
+                    )
+                )
+            },
+            suffix = {
+                Text(
+                    text = unitLabel,
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(28, 43, 43)
                     )
                 )
             },
