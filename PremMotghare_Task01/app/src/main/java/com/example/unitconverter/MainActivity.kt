@@ -165,6 +165,17 @@ private fun UnitConverterApp() {
                 value = toUnit.displayName,
                 onClick = { pickerTarget = PickerTarget.TO }
             )
+
+            Text(
+                text = "Made by Prem976421",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp, bottom = 2.dp),
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = Color(107, 143, 143)
+                )
+            )
         }
     }
 
