@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +37,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -87,14 +85,6 @@ private fun UnitConverterApp() {
     var fromUnit by rememberSaveable { mutableStateOf(Converter.unitsFor(ConversionCategory.LENGTH).first()) }
     var toUnit by rememberSaveable { mutableStateOf(Converter.unitsFor(ConversionCategory.LENGTH).last()) }
     var pickerTarget by rememberSaveable { mutableStateOf<PickerTarget?>(null) }
-    var swapRotationTarget by remember { mutableFloatStateOf(0f) }
-
-    val swapRotation by animateFloatAsState(
-        targetValue = swapRotationTarget,
-        animationSpec = tween(durationMillis = 320),
-        label = "swapRotation"
-    )
-
     val availableUnits = remember(selectedCategory) {
         Converter.unitsFor(selectedCategory)
     }
@@ -158,9 +148,7 @@ private fun UnitConverterApp() {
             )
 
             SwapButton(
-                rotation = swapRotation,
                 onSwap = {
-                    swapRotationTarget += 180f
                     val currentConverted = conversionResult.numericResult
                     val previousFrom = fromUnit
                     fromUnit = toUnit
@@ -379,23 +367,11 @@ private fun BottomSheetSelector(
 }
 
 @Composable
-private fun SwapButton(
-    rotation: Float,
-    onSwap: () -> Unit
-) {
+private fun SwapButton(onSwap: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Swap",
-            style = TextStyle(
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color(28, 43, 43)
-            )
-        )
         Card(
             shape = CircleShape,
             colors = CardDefaults.cardColors(containerColor = Color(230, 244, 244)),
@@ -408,8 +384,7 @@ private fun SwapButton(
                 Icon(
                     imageVector = Icons.Filled.SwapVert,
                     contentDescription = "Swap units",
-                    tint = Color(13, 148, 136),
-                    modifier = Modifier.graphicsLayer { rotationZ = rotation }
+                    tint = Color(13, 148, 136)
                 )
             }
         }
