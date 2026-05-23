@@ -110,61 +110,67 @@ private fun UnitConverterApp() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(240, 244, 244))
-                .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            CategoryTabs(
-                selectedCategory = selectedCategory,
-                onCategorySelected = { category ->
-                    selectedCategory = category
-                }
-            )
+            Column(
+                modifier = Modifier
+                    .weight(1f, fill = true)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                CategoryTabs(
+                    selectedCategory = selectedCategory,
+                    onCategorySelected = { category ->
+                        selectedCategory = category
+                    }
+                )
 
-            InlineInputField(
-                value = inputValue,
-                unitLabel = fromUnit.displayName,
-                onValueChange = { newValue ->
-                    if (newValue.isEmpty() || newValue.matches(Regex("^-?\\d*\\.?\\d*$"))) {
-                        inputValue = newValue
+                InlineInputField(
+                    value = inputValue,
+                    unitLabel = fromUnit.displayName,
+                    onValueChange = { newValue ->
+                        if (newValue.isEmpty() || newValue.matches(Regex("^-?\\d*\\.?\\d*$"))) {
+                            inputValue = newValue
+                        } else {
+                            inputValue = newValue
+                        }
+                    }
+                )
+
+                OutputField(
+                    value = if (conversionResult.isValid) {
+                        "${conversionResult.displayValue} ${conversionResult.displayUnit}".trim()
                     } else {
-                        inputValue = newValue
+                        conversionResult.displayValue
                     }
-                }
-            )
+                )
 
-            OutputField(
-                value = if (conversionResult.isValid) {
-                    "${conversionResult.displayValue} ${conversionResult.displayUnit}".trim()
-                } else {
-                    conversionResult.displayValue
-                }
-            )
+                BottomSheetSelector(
+                    label = "From",
+                    value = fromUnit.displayName,
+                    onClick = { pickerTarget = PickerTarget.FROM }
+                )
 
-            BottomSheetSelector(
-                label = "From",
-                value = fromUnit.displayName,
-                onClick = { pickerTarget = PickerTarget.FROM }
-            )
-
-            SwapButton(
-                onSwap = {
-                    val currentConverted = conversionResult.numericResult
-                    val previousFrom = fromUnit
-                    fromUnit = toUnit
-                    toUnit = previousFrom
-                    if (currentConverted != null && conversionResult.isValid) {
-                        inputValue = formatNumber(currentConverted)
+                SwapButton(
+                    onSwap = {
+                        val currentConverted = conversionResult.numericResult
+                        val previousFrom = fromUnit
+                        fromUnit = toUnit
+                        toUnit = previousFrom
+                        if (currentConverted != null && conversionResult.isValid) {
+                            inputValue = formatNumber(currentConverted)
+                        }
                     }
-                }
-            )
+                )
 
-            BottomSheetSelector(
-                label = "To",
-                value = toUnit.displayName,
-                onClick = { pickerTarget = PickerTarget.TO }
-            )
+                BottomSheetSelector(
+                    label = "To",
+                    value = toUnit.displayName,
+                    onClick = { pickerTarget = PickerTarget.TO }
+                )
+            }
 
             Text(
                 text = "Made by Prem976421",
@@ -174,7 +180,8 @@ private fun UnitConverterApp() {
                 style = TextStyle(
                     fontSize = 12.sp,
                     color = Color(107, 143, 143)
-                )
+                ),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )
         }
     }
