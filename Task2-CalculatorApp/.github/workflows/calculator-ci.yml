@@ -1,0 +1,83 @@
+name: Calculator App CI
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "Task2-CalculatorApp/**"
+  workflow_dispatch:  # allows manual trigger from GitHub UI
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout ────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Set up JDK ──────────────────────────────────────────────────
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      # ── 3. Grant execute permission for gradlew ────────────────────────
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+        working-directory: Task2-CalculatorApp
+
+      # ── 4. Cache Gradle dependencies ───────────────────────────────────
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('Task2-CalculatorApp/**/*.gradle*', 'Task2-CalculatorApp/**/libs.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # ── 5. Run Unit Tests ──────────────────────────────────────────────
+      - name: Run unit tests
+        run: ./gradlew test --no-daemon
+        working-directory: Task2-CalculatorApp
+
+      # ── 6. Upload test results ─────────────────────────────────────────
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()   # upload even if tests fail
+        with:
+          name: test-results
+          path: Task2-CalculatorApp/app/build/reports/tests/
+          retention-days: 14
+
+      # ── 7. Build Debug APK ─────────────────────────────────────────────
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --no-daemon
+        working-directory: Task2-CalculatorApp
+
+      # ── 8. Upload APK artifact ─────────────────────────────────────────
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: calculator-app-debug-${{ github.run_number }}
+          path: Task2-CalculatorApp/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+
+      # ── 9. Build summary ───────────────────────────────────────────────
+      - name: Write build summary
+        run: |
+          echo "## ✅ Calculator App Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch** | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Run #** | ${{ github.run_number }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Triggered by** | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📦 Debug APK uploaded as artifact \`calculator-app-debug-${{ github.run_number }}\`" >> $GITHUB_STEP_SUMMARY
