@@ -4,7 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,7 +36,6 @@ fun CalcButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     type: ButtonType = ButtonType.NUMBER,
-    aspectRatio: Float = 1f,
     fontSize: TextUnit = 22.sp
 ) {
     var pressed by remember { mutableStateOf(false) }
@@ -56,7 +55,7 @@ fun CalcButton(
 
     Surface(
         modifier = modifier
-            .aspectRatio(aspectRatio)
+            .fillMaxHeight()
             .scale(scale)
             .padding(4.dp)
             .pointerInput(Unit) {

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -78,7 +79,8 @@ fun CalculatorScreen(
             transitionSpec = {
                 fadeIn(tween(200)) togetherWith fadeOut(tween(150))
             },
-            label = "keypadMode"
+            label = "keypadMode",
+            modifier = Modifier.weight(1.5f)
         ) { isScientific ->
             if (isScientific) {
                 ScientificKeypad(vm = vm)
@@ -177,41 +179,41 @@ private fun ModeToggle(
 private fun BasicKeypad(vm: CalculatorViewModel) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp),
+            .fillMaxSize()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
         // Row 1: AC, +/−, %, ÷
-        Row(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().weight(1f)) {
             CalcButton("AC",  { vm.onClear()          }, Modifier.weight(1f), ButtonType.FUNCTION)
             CalcButton("+/−", { vm.onPlusMinus()      }, Modifier.weight(1f), ButtonType.FUNCTION)
             CalcButton("%",   { vm.onPercent()         }, Modifier.weight(1f), ButtonType.FUNCTION)
             CalcButton("÷",   { vm.onOperator("/")    }, Modifier.weight(1f), ButtonType.OPERATOR)
         }
         // Row 2: 7, 8, 9, ×
-        Row(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().weight(1f)) {
             CalcButton("7",   { vm.onDigit("7")        }, Modifier.weight(1f), ButtonType.NUMBER)
             CalcButton("8",   { vm.onDigit("8")        }, Modifier.weight(1f), ButtonType.NUMBER)
             CalcButton("9",   { vm.onDigit("9")        }, Modifier.weight(1f), ButtonType.NUMBER)
             CalcButton("×",   { vm.onOperator("*")    }, Modifier.weight(1f), ButtonType.OPERATOR)
         }
         // Row 3: 4, 5, 6, −
-        Row(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().weight(1f)) {
             CalcButton("4",   { vm.onDigit("4")        }, Modifier.weight(1f), ButtonType.NUMBER)
             CalcButton("5",   { vm.onDigit("5")        }, Modifier.weight(1f), ButtonType.NUMBER)
             CalcButton("6",   { vm.onDigit("6")        }, Modifier.weight(1f), ButtonType.NUMBER)
             CalcButton("−",   { vm.onOperator("-")    }, Modifier.weight(1f), ButtonType.OPERATOR)
         }
         // Row 4: 1, 2, 3, +
-        Row(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().weight(1f)) {
             CalcButton("1",   { vm.onDigit("1")        }, Modifier.weight(1f), ButtonType.NUMBER)
             CalcButton("2",   { vm.onDigit("2")        }, Modifier.weight(1f), ButtonType.NUMBER)
             CalcButton("3",   { vm.onDigit("3")        }, Modifier.weight(1f), ButtonType.NUMBER)
             CalcButton("+",   { vm.onOperator("+")    }, Modifier.weight(1f), ButtonType.OPERATOR)
         }
         // Row 5: 0 (wide), ., ⌫, =
-        Row(Modifier.fillMaxWidth()) {
-            CalcButton("0",   { vm.onDigit("0")        }, Modifier.weight(2f), ButtonType.NUMBER, aspectRatio = 2f)
+        Row(Modifier.fillMaxWidth().weight(1f)) {
+            CalcButton("0",   { vm.onDigit("0")        }, Modifier.weight(2f), ButtonType.NUMBER)
             CalcButton(".",   { vm.onDecimal()          }, Modifier.weight(1f), ButtonType.NUMBER)
             // Delete button custom
             Box(
@@ -220,7 +222,7 @@ private fun BasicKeypad(vm: CalculatorViewModel) {
                     .padding(4.dp)
                     .clip(RoundedCornerShape(20.dp))
                     .background(Color(0xFF3B5BDB))
-                    .height(70.dp),
+                    .fillMaxHeight(),
                 contentAlignment = Alignment.Center
             ) {
                 IconButton(onClick = { vm.onDelete() }) {
@@ -234,8 +236,8 @@ private fun BasicKeypad(vm: CalculatorViewModel) {
             }
         }
         // Row 6: = (full width)
-        Row(Modifier.fillMaxWidth()) {
-            CalcButton("=",   { vm.onEquals()          }, Modifier.weight(4f), ButtonType.EQUALS, aspectRatio = 4f, fontSize = 28.sp)
+        Row(Modifier.fillMaxWidth().weight(1f)) {
+            CalcButton("=",   { vm.onEquals()          }, Modifier.weight(4f), ButtonType.EQUALS, fontSize = 28.sp)
         }
     }
 }
@@ -244,25 +246,25 @@ private fun BasicKeypad(vm: CalculatorViewModel) {
 private fun ScientificKeypad(vm: CalculatorViewModel) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp),
+            .fillMaxSize()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
     ) {
         // Scientific row 1
-        Row(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().weight(1f)) {
             CalcButton("sin",  { vm.onScientificFunction("sin")  }, Modifier.weight(1f), ButtonType.SCIENTIFIC, fontSize = 14.sp)
             CalcButton("cos",  { vm.onScientificFunction("cos")  }, Modifier.weight(1f), ButtonType.SCIENTIFIC, fontSize = 14.sp)
             CalcButton("tan",  { vm.onScientificFunction("tan")  }, Modifier.weight(1f), ButtonType.SCIENTIFIC, fontSize = 14.sp)
             CalcButton("π",    { vm.onScientificFunction("π")    }, Modifier.weight(1f), ButtonType.SCIENTIFIC, fontSize = 18.sp)
         }
         // Scientific row 2
-        Row(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().weight(1f)) {
             CalcButton("log",  { vm.onScientificFunction("log")  }, Modifier.weight(1f), ButtonType.SCIENTIFIC, fontSize = 14.sp)
             CalcButton("ln",   { vm.onScientificFunction("ln")   }, Modifier.weight(1f), ButtonType.SCIENTIFIC, fontSize = 14.sp)
             CalcButton("√",    { vm.onScientificFunction("sqrt") }, Modifier.weight(1f), ButtonType.SCIENTIFIC, fontSize = 18.sp)
             CalcButton("e",    { vm.onScientificFunction("e")    }, Modifier.weight(1f), ButtonType.SCIENTIFIC, fontSize = 18.sp)
         }
         // Scientific row 3
-        Row(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().weight(1f)) {
             CalcButton("x²",   { vm.onScientificFunction("x²")  }, Modifier.weight(1f), ButtonType.SCIENTIFIC, fontSize = 16.sp)
             CalcButton("x³",   { vm.onScientificFunction("x³")  }, Modifier.weight(1f), ButtonType.SCIENTIFIC, fontSize = 16.sp)
             CalcButton("1/x",  { vm.onScientificFunction("1/x") }, Modifier.weight(1f), ButtonType.SCIENTIFIC, fontSize = 14.sp)
@@ -270,32 +272,32 @@ private fun ScientificKeypad(vm: CalculatorViewModel) {
         }
 
         // Standard keypad rows (compact)
-        Row(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().weight(1f)) {
             CalcButton("AC",  { vm.onClear()       }, Modifier.weight(1f), ButtonType.FUNCTION, fontSize = 16.sp)
             CalcButton("+/−", { vm.onPlusMinus()   }, Modifier.weight(1f), ButtonType.FUNCTION, fontSize = 16.sp)
             CalcButton("%",   { vm.onPercent()      }, Modifier.weight(1f), ButtonType.FUNCTION, fontSize = 16.sp)
             CalcButton("÷",   { vm.onOperator("/") }, Modifier.weight(1f), ButtonType.OPERATOR, fontSize = 18.sp)
         }
-        Row(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().weight(1f)) {
             CalcButton("7", { vm.onDigit("7")    }, Modifier.weight(1f), ButtonType.NUMBER, fontSize = 18.sp)
             CalcButton("8", { vm.onDigit("8")    }, Modifier.weight(1f), ButtonType.NUMBER, fontSize = 18.sp)
             CalcButton("9", { vm.onDigit("9")    }, Modifier.weight(1f), ButtonType.NUMBER, fontSize = 18.sp)
             CalcButton("×", { vm.onOperator("*") }, Modifier.weight(1f), ButtonType.OPERATOR, fontSize = 18.sp)
         }
-        Row(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().weight(1f)) {
             CalcButton("4", { vm.onDigit("4")    }, Modifier.weight(1f), ButtonType.NUMBER, fontSize = 18.sp)
             CalcButton("5", { vm.onDigit("5")    }, Modifier.weight(1f), ButtonType.NUMBER, fontSize = 18.sp)
             CalcButton("6", { vm.onDigit("6")    }, Modifier.weight(1f), ButtonType.NUMBER, fontSize = 18.sp)
             CalcButton("−", { vm.onOperator("-") }, Modifier.weight(1f), ButtonType.OPERATOR, fontSize = 18.sp)
         }
-        Row(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().weight(1f)) {
             CalcButton("1", { vm.onDigit("1")    }, Modifier.weight(1f), ButtonType.NUMBER, fontSize = 18.sp)
             CalcButton("2", { vm.onDigit("2")    }, Modifier.weight(1f), ButtonType.NUMBER, fontSize = 18.sp)
             CalcButton("3", { vm.onDigit("3")    }, Modifier.weight(1f), ButtonType.NUMBER, fontSize = 18.sp)
             CalcButton("+", { vm.onOperator("+") }, Modifier.weight(1f), ButtonType.OPERATOR, fontSize = 18.sp)
         }
-        Row(Modifier.fillMaxWidth()) {
-            CalcButton("0", { vm.onDigit("0")   }, Modifier.weight(2f), ButtonType.NUMBER, aspectRatio = 2f, fontSize = 18.sp)
+        Row(Modifier.fillMaxWidth().weight(1f)) {
+            CalcButton("0", { vm.onDigit("0")   }, Modifier.weight(2f), ButtonType.NUMBER, fontSize = 18.sp)
             CalcButton(".", { vm.onDecimal()     }, Modifier.weight(1f), ButtonType.NUMBER, fontSize = 18.sp)
             Box(
                 modifier = Modifier
@@ -303,7 +305,7 @@ private fun ScientificKeypad(vm: CalculatorViewModel) {
                     .padding(4.dp)
                     .clip(RoundedCornerShape(20.dp))
                     .background(Color(0xFF3B5BDB))
-                    .height(58.dp),
+                    .fillMaxHeight(),
                 contentAlignment = Alignment.Center
             ) {
                 IconButton(onClick = { vm.onDelete() }) {
@@ -316,8 +318,8 @@ private fun ScientificKeypad(vm: CalculatorViewModel) {
                 }
             }
         }
-        Row(Modifier.fillMaxWidth()) {
-            CalcButton("=", { vm.onEquals() }, Modifier.weight(4f), ButtonType.EQUALS, aspectRatio = 4f, fontSize = 24.sp)
+        Row(Modifier.fillMaxWidth().weight(1f)) {
+            CalcButton("=", { vm.onEquals() }, Modifier.weight(4f), ButtonType.EQUALS, fontSize = 24.sp)
         }
     }
 }
