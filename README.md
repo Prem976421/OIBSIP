@@ -5,7 +5,7 @@ This repository contains the projects I have developed as part of the internship
 
 ---
 
-## 📱 Projects Overview
+## Projects Overview
 
 ### [Task 1: Unit Converter App](./PremMotghare_Task01)
 A versatile and highly responsive Unit Converter App designed to seamlessly convert values across multiple measurement categories.
@@ -29,7 +29,7 @@ A modern, fully-functional Calculator App featuring both basic arithmetic and ad
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## Tech Stack & Architecture
 - **Language:** Kotlin
 - **UI Toolkit:** Jetpack Compose
 - **Design System:** Material Design 3
@@ -39,7 +39,7 @@ A modern, fully-functional Calculator App featuring both basic arithmetic and ad
 
 ---
 
-## 🚀 How to Run the Projects Locally
+## How to Run the Projects Locally
 
 If you'd like to test out the applications on your own machine, follow these simple steps:
 
