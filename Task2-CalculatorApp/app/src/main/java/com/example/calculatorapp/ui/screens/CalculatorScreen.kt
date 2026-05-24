@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -225,7 +225,7 @@ private fun BasicKeypad(vm: CalculatorViewModel) {
             ) {
                 IconButton(onClick = { vm.onDelete() }) {
                     Icon(
-                        imageVector = Icons.Default.Backspace,
+                        imageVector = Icons.AutoMirrored.Filled.Backspace,
                         contentDescription = "Delete",
                         tint = Color.White,
                         modifier = Modifier.size(26.dp)
@@ -308,7 +308,7 @@ private fun ScientificKeypad(vm: CalculatorViewModel) {
             ) {
                 IconButton(onClick = { vm.onDelete() }) {
                     Icon(
-                        imageVector = Icons.Default.Backspace,
+                        imageVector = Icons.AutoMirrored.Filled.Backspace,
                         contentDescription = "Delete",
                         tint = Color.White,
                         modifier = Modifier.size(22.dp)
