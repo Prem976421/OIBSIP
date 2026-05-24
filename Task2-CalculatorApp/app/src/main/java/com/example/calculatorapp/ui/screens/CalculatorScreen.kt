@@ -89,7 +89,17 @@ fun CalculatorScreen(
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(8.dp))
+
+        Text(
+            text = "made by Prem976421",
+            color = Color(0xFF9CA3AF),
+            fontSize = 12.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(Modifier.height(24.dp))
     }
 }
 
