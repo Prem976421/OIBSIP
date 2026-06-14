@@ -1,4 +1,4 @@
-package com.example.stopwatch.ui.theme
+﻿package com.example.stopwatch.ui.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
@@ -6,9 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
-    primary = DeepIndigo,
-    secondary = SoftTeal,
-    tertiary = SlateBlue,
+    primary = PalettePurple,
+    secondary = PaletteTeal,
+    tertiary = PaletteYellow,
     background = SurfaceLight,
     surface = Color.White,
     onPrimary = Color.White,

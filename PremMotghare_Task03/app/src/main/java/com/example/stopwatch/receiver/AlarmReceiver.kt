@@ -1,35 +1,43 @@
-package com.example.stopwatch.receiver
+﻿package com.example.stopwatch.receiver
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
-import android.widget.Toast
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import android.os.Build
+import androidx.core.app.NotificationCompat
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val label = intent.getStringExtra("ALARM_LABEL") ?: "Alarm"
-        Toast.makeText(context, "ALARM: $label", Toast.LENGTH_LONG).show()
-
-        try {
-            val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-                ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            val ringtone = RingtoneManager.getRingtone(context, uri)
-            ringtone.play()
-
-            // Stop after 30 seconds
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(30000)
-                if (ringtone.isPlaying) {
-                    ringtone.stop()
-                }
+        val label = intent.getStringExtra("ALARM_LABEL") ?: "Wake Up"
+        val channelId = "alarm_channel"
+        
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId, 
+                "Alarms", 
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Channel for Alarm notifications"
+                setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM), null)
+                enableVibration(true)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+            notificationManager.createNotificationChannel(channel)
         }
+
+        val notification = NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setContentTitle("ALARM RINGING")
+            .setContentText(label)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setAutoCancel(true)
+            .build()
+
+        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.stopwatch.viewmodel
+﻿package com.example.stopwatch.viewmodel
 
 import android.app.AlarmManager
 import android.app.Application
@@ -11,6 +11,7 @@ import com.example.stopwatch.receiver.AlarmReceiver
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import java.util.Calendar
 
 data class Alarm(
@@ -64,6 +65,15 @@ class AlarmViewModel(private val app: Application) : AndroidViewModel(app) {
         saveAlarms()
     }
 
+    fun deleteAlarm(id: Int) {
+        val alarm = _alarms.value.find { it.id == id }
+        if (alarm != null) {
+            cancelAlarm(alarm)
+            _alarms.update { list -> list.filter { it.id != id } }
+            saveAlarms()
+        }
+    }
+
     fun addAlarm(hour: Int, minute: Int, label: String) {
         val newId = (_alarms.value.maxOfOrNull { it.id } ?: 0) + 1
         val newAlarm = Alarm(newId, hour, minute, label, true)
@@ -111,3 +121,4 @@ class AlarmViewModel(private val app: Application) : AndroidViewModel(app) {
         alarmManager.cancel(pendingIntent)
     }
 }
+

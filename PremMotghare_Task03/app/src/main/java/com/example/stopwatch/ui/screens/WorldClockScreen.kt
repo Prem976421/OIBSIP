@@ -88,26 +88,26 @@ fun WorldClockScreen(viewModel: WorldClockViewModel = viewModel()) {
 fun getFlagEmoji(zoneId: String): String {
     val id = zoneId.lowercase()
     return when {
-        id.contains("tokyo") || id.contains("japan") -> "????"
-        id.contains("london") || id.contains("europe/london") -> "????"
-        id.contains("new_york") || id.contains("america") -> "????"
-        id.contains("sydney") || id.contains("australia") -> "????"
-        id.contains("dubai") || id.contains("asia/dubai") -> "????"
-        id.contains("paris") || id.contains("france") -> "????"
-        id.contains("calcutta") || id.contains("india") || id.contains("kolkata") -> "????"
-        id.contains("brazil") || id.contains("sao_paulo") -> "????"
-        id.contains("canada") || id.contains("toronto") -> "????"
-        id.contains("mexico") -> "????"
-        id.contains("berlin") || id.contains("germany") -> "????"
-        id.contains("rome") || id.contains("italy") -> "????"
-        id.contains("madrid") || id.contains("spain") -> "????"
-        else -> "??"
+        id.contains("tokyo") || id.contains("japan") -> "🇯🇵"
+        id.contains("london") || id.contains("europe/london") -> "🇬🇧"
+        id.contains("new_york") || id.contains("america") -> "🇺🇸"
+        id.contains("sydney") || id.contains("australia") -> "🇦🇺"
+        id.contains("dubai") || id.contains("asia/dubai") -> "🇦🇪"
+        id.contains("paris") || id.contains("france") -> "🇫🇷"
+        id.contains("calcutta") || id.contains("india") || id.contains("kolkata") -> "🇮🇳"
+        id.contains("brazil") || id.contains("sao_paulo") -> "🇧🇷"
+        id.contains("canada") || id.contains("toronto") -> "🇨🇦"
+        id.contains("mexico") -> "🇲🇽"
+        id.contains("berlin") || id.contains("germany") -> "🇩🇪"
+        id.contains("rome") || id.contains("italy") -> "🇮🇹"
+        id.contains("madrid") || id.contains("spain") -> "🇪🇸"
+        else -> "🌍"
     }
 }
 
 @Composable
 fun CityTimeCard(cityTime: CityTime) {
-    val flagEmoji = if (cityTime.city.isLocal) "??" else getFlagEmoji(cityTime.city.zoneId)
+    val flagEmoji = if (cityTime.city.isLocal) "📍" else getFlagEmoji(cityTime.city.zoneId)
     
     Box(
         modifier = Modifier

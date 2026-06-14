@@ -1,13 +1,16 @@
-package com.example.stopwatch.ui.screens
+﻿package com.example.stopwatch.ui.screens
 
+import android.Manifest
+import android.app.TimePickerDialog
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,8 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,16 +28,28 @@ import com.example.stopwatch.ui.theme.Secondary40
 import com.example.stopwatch.ui.theme.SurfaceLight
 import com.example.stopwatch.viewmodel.Alarm
 import com.example.stopwatch.viewmodel.AlarmViewModel
+import java.util.Calendar
 
 @Composable
 fun AlarmScreen(viewModel: AlarmViewModel = viewModel()) {
     val alarms by viewModel.alarms.collectAsState()
-    var showAddDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showAddDialog = true },
+                onClick = {
+                    val calendar = Calendar.getInstance()
+                    TimePickerDialog(
+                        context,
+                        { _, hour, minute ->
+                            viewModel.addAlarm(hour, minute, "Alarm")
+                        },
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE),
+                        false
+                    ).show()
+                },
                 containerColor = Primary40,
                 contentColor = Color.White
             ) {
@@ -65,63 +80,20 @@ fun AlarmScreen(viewModel: AlarmViewModel = viewModel()) {
                     contentPadding = PaddingValues(bottom = 100.dp)
                 ) {
                     items(alarms, key = { it.id }) { alarm ->
-                        AlarmCard(alarm = alarm, onToggle = { viewModel.toggleAlarm(alarm.id) })
+                        AlarmCard(
+                            alarm = alarm,
+                            onToggle = { viewModel.toggleAlarm(alarm.id) },
+                            onDelete = { viewModel.deleteAlarm(alarm.id) }
+                        )
                     }
                 }
             }
         }
     }
-
-    if (showAddDialog) {
-        var hourStr by remember { mutableStateOf("07") }
-        var minStr by remember { mutableStateOf("30") }
-        var label by remember { mutableStateOf("Wake Up") }
-
-        AlertDialog(
-            onDismissRequest = { showAddDialog = false },
-            title = { Text("Add Alarm") },
-            text = {
-                Column {
-                    OutlinedTextField(
-                        value = hourStr,
-                        onValueChange = { hourStr = it },
-                        label = { Text("Hour (0-23)") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = minStr,
-                        onValueChange = { minStr = it },
-                        label = { Text("Minute (0-59)") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = label,
-                        onValueChange = { label = it },
-                        label = { Text("Label") }
-                    )
-                }
-            },
-            confirmButton = {
-                Button(onClick = {
-                    val h = hourStr.toIntOrNull() ?: 0
-                    val m = minStr.toIntOrNull() ?: 0
-                    viewModel.addAlarm(h % 24, m % 60, label)
-                    showAddDialog = false
-                }) {
-                    Text("Save")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showAddDialog = false }) { Text("Cancel") }
-            }
-        )
-    }
 }
 
 @Composable
-fun AlarmCard(alarm: Alarm, onToggle: () -> Unit) {
+fun AlarmCard(alarm: Alarm, onToggle: () -> Unit, onDelete: () -> Unit) {
     val alpha = if (alarm.isEnabled) 1f else 0.5f
 
     Row(
@@ -149,13 +121,19 @@ fun AlarmCard(alarm: Alarm, onToggle: () -> Unit) {
             )
         }
 
-        Switch(
-            checked = alarm.isEnabled,
-            onCheckedChange = { onToggle() },
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                checkedTrackColor = Primary40
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Switch(
+                checked = alarm.isEnabled,
+                onCheckedChange = { onToggle() },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = Primary40
+                )
             )
-        )
+            Spacer(modifier = Modifier.width(8.dp))
+            IconButton(onClick = onDelete) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete Alarm", tint = Secondary40)
+            }
+        }
     }
 }
