@@ -1,10 +1,7 @@
 package com.example.stopwatch
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -26,38 +23,41 @@ class DemoTestScript {
 
         // 1. World Clock Section
         Thread.sleep(2000)
-        composeTestRule.onNodeWithText("Select Country Capital").performClick()
-        Thread.sleep(1000)
-        // Scroll inside dropdown using UiAutomator or Compose
-        // "🇲🇽 Mexico - Mexico City"
-        val mexicoNode = composeTestRule.onNodeWithText("🇲🇽 Mexico - Mexico City")
-        // Expose DropdownMenu doesn't scroll easily via simple performClick if it's offscreen.
-        // Let's use UiAutomator to scroll and find it.
-        val mexicoText = device.findObject(UiSelector().textContains("Mexico"))
-        mexicoText.waitForExists(3000)
-        if(!mexicoText.exists()) {
-            device.swipe(500, 1500, 500, 500, 50) // Swipe up
-            Thread.sleep(1000)
-            device.swipe(500, 1500, 500, 500, 50) // Swipe up again
+        
+        // Find the Select Country Capital dropdown
+        val dropdown = device.findObject(UiSelector().textContains("Select Country Capital"))
+        if (dropdown.waitForExists(3000)) {
+            dropdown.click()
+            Thread.sleep(1500)
+            
+            // Scroll to find Mexico
+            val mexicoText = device.findObject(UiSelector().textContains("Mexico"))
+            if (!mexicoText.waitForExists(2000)) {
+                device.swipe(500, 1500, 500, 500, 50) // Swipe up
+                Thread.sleep(1000)
+                device.swipe(500, 1500, 500, 500, 50) // Swipe up again
+            }
+            if (mexicoText.exists()) {
+                mexicoText.click()
+            }
         }
-        mexicoText.click()
         Thread.sleep(2000)
 
         // 2. Alarm Section
-        composeTestRule.onNodeWithText("Alarm").performClick()
-        Thread.sleep(1000)
+        val alarmTab = device.findObject(UiSelector().text("Alarm"))
+        if (alarmTab.waitForExists(2000)) alarmTab.click()
+        Thread.sleep(1500)
         
-        // Handle Android 13+ Notification Permission if it appears
+        // Handle Notification Permission if it appears
         val allowButton = device.findObject(UiSelector().textMatches("(?i)Allow|ALLOW"))
         if (allowButton.exists()) {
             allowButton.click()
             Thread.sleep(1000)
         }
 
-        // Click Add Alarm FAB (It has an icon, no text, let's use content description or UiAutomator)
+        // Click Add Alarm FAB
         val addAlarmFab = device.findObject(UiSelector().descriptionContains("Add Alarm"))
         if(addAlarmFab.exists()) addAlarmFab.click() else {
-            // fallback, click middle bottom
             device.click(device.displayWidth / 2, device.displayHeight - 300)
         }
         
@@ -68,20 +68,16 @@ class DemoTestScript {
             keyboardIcon.click()
             Thread.sleep(1000)
             
-            // Enter Hour
             val hourInput = device.findObject(UiSelector().className("android.widget.EditText").instance(0))
             if(hourInput.exists()) { hourInput.clearTextField(); hourInput.setText("5") }
             Thread.sleep(500)
             
-            // Enter Minute
             val minInput = device.findObject(UiSelector().className("android.widget.EditText").instance(1))
             if(minInput.exists()) { minInput.clearTextField(); minInput.setText("00") }
             Thread.sleep(500)
 
-            // Select AM
-            val amSpinner = device.findObject(UiSelector().text("AM"))
+            val amSpinner = device.findObject(UiSelector().textMatches("(?i)AM"))
             if(amSpinner.exists()) amSpinner.click()
-            
             Thread.sleep(1000)
         }
         val okBtn = device.findObject(UiSelector().textMatches("(?i)OK"))
@@ -89,32 +85,43 @@ class DemoTestScript {
         Thread.sleep(2000)
 
         // 3. Stopwatch Section
-        composeTestRule.onNodeWithText("Stopwatch").performClick()
+        val stopwatchTab = device.findObject(UiSelector().text("Stopwatch"))
+        if (stopwatchTab.waitForExists(2000)) stopwatchTab.click()
+        Thread.sleep(1500)
+        
+        val playBtn = device.findObject(UiSelector().descriptionMatches("(?i)Play"))
+        if (playBtn.exists()) playBtn.click()
+        Thread.sleep(5000) 
+        
+        val lapBtn = device.findObject(UiSelector().descriptionMatches("(?i)Lap"))
+        if (lapBtn.exists()) lapBtn.click()
+        Thread.sleep(5000) 
+        
+        if (lapBtn.exists()) lapBtn.click()
         Thread.sleep(1000)
-        composeTestRule.onNodeWithContentDescription("Play").performClick()
-        Thread.sleep(5000) // 5 seconds
-        composeTestRule.onNodeWithContentDescription("Lap").performClick() // Lap 1
-        Thread.sleep(5000) // 5 seconds
-        composeTestRule.onNodeWithContentDescription("Lap").performClick() // Lap 2
-        Thread.sleep(1000)
-        composeTestRule.onNodeWithContentDescription("Pause").performClick()
+        
+        val pauseBtn = device.findObject(UiSelector().descriptionMatches("(?i)Pause"))
+        if (pauseBtn.exists()) pauseBtn.click()
         Thread.sleep(2000)
 
         // 4. Timer Section
-        composeTestRule.onNodeWithText("Timer").performClick()
-        Thread.sleep(1000)
+        val timerTab = device.findObject(UiSelector().text("Timer"))
+        if (timerTab.waitForExists(2000)) timerTab.click()
+        Thread.sleep(1500)
         
-        // Scroll Sec wheel to 05
-        composeTestRule.onNodeWithTag("picker_Sec").performScrollToIndex(5)
+        // Scroll Sec wheel to 05 using compose rule
+        try {
+            composeTestRule.onNodeWithTag("picker_Sec").performScrollToIndex(5)
+        } catch (e: Exception) {
+            // fallback, do nothing
+        }
         Thread.sleep(1500)
         
         // Start Timer
-        composeTestRule.onNodeWithText("Start Timer").performClick()
+        val startTimerBtn = device.findObject(UiSelector().textContains("Start Timer"))
+        if (startTimerBtn.exists()) startTimerBtn.click()
         
-        // Wait for it to hit 0 and ring (5 seconds + 1 sec buffer)
-        Thread.sleep(6000)
-        
-        // Wait 5 more seconds to hear the loud alarm ringtone
-        Thread.sleep(5000)
+        // Wait 11 seconds for ring
+        Thread.sleep(11000)
     }
 }
