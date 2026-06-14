@@ -86,7 +86,7 @@ fun StopwatchScreen(viewModel: StopwatchViewModel = viewModel()) {
                     style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
                 )
 
-                val gradientBrush = Brush.sweepGradient(listOf(Tertiary40, Primary40, Primary80, Tertiary40))
+                val gradientBrush = Brush.sweepGradient(listOf(Tertiary80, Secondary40, Tertiary40, Primary40, Tertiary80))
 
                 if (isPlaying) {
                     rotate(rotation) {

@@ -1,4 +1,4 @@
-﻿package com.example.stopwatch.ui.screens
+package com.example.stopwatch.ui.screens
 
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.core.animateFloatAsState
@@ -86,7 +86,7 @@ fun TimerScreen(viewModel: TimerViewModel = viewModel()) {
                     )
 
                     drawArc(
-                        brush = Brush.sweepGradient(listOf(Tertiary40, Primary40, Primary80, Tertiary40)),
+                        brush = Brush.sweepGradient(listOf(Tertiary80, Secondary40, Tertiary40, Primary40, Tertiary80)),
                         startAngle = -90f,
                         sweepAngle = animatedProgress * 360f,
                         useCenter = false,
