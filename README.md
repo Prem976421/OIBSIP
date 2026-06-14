@@ -27,7 +27,7 @@ A modern, fully-functional Calculator App featuring both basic arithmetic and ad
 - **Dynamic Layout:** Features a heavily optimized, responsive Compose layout grid utilizing adaptive weights, ensuring that the keypad scales beautifully to any screen dimension without overlapping.
 - **Automated Testing & CI/CD:** Includes automated Espresso/Compose UI scripts for screen-recording simulations, and GitHub Actions workflows for continuous integration.
 
-### [Task 3: Stopwatch](./PremMotghare_Task03(Stopwatch))
+### [Task 3: Stopwatch & Time Manager](./PremMotghare_Task03(Stopwatch%20&%20Time%20Manager))
 A modern, full-featured time management app containing a World Clock, Alarms, a Stopwatch, and a Timer.
 
 **Key Features:**
@@ -68,7 +68,7 @@ If you'd like to test out the applications on your own machine, follow these sim
    - Launch Android Studio.
    - Click on **Open**.
    - Navigate to the cloned repository directory.
-   - **Important:** Do *not* open the root repository folder. Instead, specifically select either **`PremMotghare_Task01(Unit Converter)`**, **`PremMotghare_Task02(Calculator App)`**, or **`PremMotghare_Task03(Stopwatch)`** to open them as independent Android projects.
+   - **Important:** Do *not* open the root repository folder. Instead, specifically select either **`PremMotghare_Task01(Unit Converter)`**, **`PremMotghare_Task02(Calculator App)`**, or **`PremMotghare_Task03(Stopwatch & Time Manager)`** to open them as independent Android projects.
 
 3. **Sync Gradle:**
    Once opened, Android Studio will automatically start syncing the dependencies. Wait for the loading bar at the bottom to finish. (If it asks you to sync, click the "Sync Project with Gradle Files" elephant icon in the top toolbar).
