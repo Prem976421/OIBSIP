@@ -1,4 +1,4 @@
-# Oasis Infobyte Summer Internship Program (OIBSIP)
+﻿# Oasis Infobyte Summer Internship Program (OIBSIP)
 
 Welcome to my repository for the **Oasis Infobyte Android App Development Internship**. 
 This repository contains the projects I have developed as part of the internship tasks, built entirely from scratch using **Kotlin** and modern **Jetpack Compose**.
@@ -21,7 +21,7 @@ A versatile and highly responsive Unit Converter App designed to seamlessly conv
 A modern, fully-functional Calculator App featuring both basic arithmetic and advanced scientific calculations.
 
 **Key Features:**
-- **Dual Modes:** Smooth, animated toggle between Basic keypad (+, −, ×, ÷, %) and Scientific keypad (sin, cos, tan, √, x², ln, π, etc.).
+- **Dual Modes:** Smooth, animated toggle between Basic keypad (+, âˆ’, Ã—, Ã·, %) and Scientific keypad (sin, cos, tan, âˆš, xÂ², ln, Ï€, etc.).
 - **Immediate Evaluation:** Scientific operations process instantly upon button press, streamlining the user workflow.
 - **Robust State Management:** Powered by MVVM architecture and `StateFlow` to flawlessly manage live expressions, results, and calculation history.
 - **Dynamic Layout:** Features a heavily optimized, responsive Compose layout grid utilizing adaptive weights, ensuring that the keypad scales beautifully to any screen dimension without overlapping.
@@ -39,13 +39,17 @@ A modern, full-featured time management app containing a World Clock, Alarms, a 
 
 ---
 
-## Tech Stack & Architecture
-- **Language:** Kotlin
-- **UI Toolkit:** Jetpack Compose
-- **Design System:** Material Design 3
-- **Architecture:** MVVM (Model-View-ViewModel)
-- **State Management:** StateFlow & Compose State
-- **Testing:** JUnit4, Espresso, Compose UI Testing
+## Tech Stack & Architecture ðŸš€
+
+This repository represents a deep dive into modern Android development practices, emphasizing clean architecture, reactive programming, and buttery-smooth user interfaces.
+
+- **Kotlin:** The entire codebase is written in Kotlin, taking full advantage of its null safety, concise syntax, and powerful coroutines.
+- **Jetpack Compose:** Completely moved away from legacy XML layouts. Every screen, animation, and custom UI component (like the infinite-scrolling Timer wheel) is built declaratively using Jetpack Compose, ensuring highly reusable and modular UI code.
+- **Material Design 3 (Material You):** Implemented the latest Google design language. The UI adapts dynamically with modern color palettes, elevated surfaces, and rounded aesthetics for a premium user experience.
+- **MVVM Architecture (Model-View-ViewModel):** A strict separation of concerns. The ViewModels handle all complex business logic (such as background timer ticks or scientific math calculations), keeping the Compose UI layers lightweight and purely reactive.
+- **StateFlow & Coroutines:** Leveraged Kotlin Coroutines for lightweight background threading and `StateFlow` to broadcast state changes flawlessly from the ViewModel to the UI, guaranteeing that the interface is always perfectly in sync with the data.
+- **System APIs & Permissions:** Integrated deeply with native Android APIs, including `AlarmManager` for scheduling precise system-level alarms, `RingtoneManager` for bypassing silent notification channels, and robust handling of Android 13/14+ runtime permissions.
+- **Automated UI Testing:** Engineered resilient, automated test scripts using `UiAutomator` and Jetpack Compose Testing libraries to programmatically navigate the app, handle system dialogs, and ensure zero regressions across major features.
 
 ---
 
@@ -75,8 +79,10 @@ If you'd like to test out the applications on your own machine, follow these sim
 
 4. **Run the App:**
    - Select your target device (Emulator or physical phone) from the device dropdown menu at the top.
-   - Click the green **Run (▶️)** button.
+   - Click the green **Run (â–¶ï¸)** button.
    - The app will compile and launch directly on your device!
 
 ---
-*Developed by [Prem Motghare](https://github.com/Prem976421)*
+*Developed with â¤ï¸ by [Prem Motghare](https://github.com/Prem976421)*  
+ðŸ”— **Let's Connect:** [LinkedIn](https://www.linkedin.com/in/prem-motghare-2372a41b5)
+
