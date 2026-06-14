@@ -5,6 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.HourglassEmpty
@@ -36,31 +39,42 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     bottomBar = {
-                        NavigationBar(containerColor = Color.White) {
-                            NavigationBarItem(
-                                icon = { Icon(Icons.Default.Public, "World Clock") },
-                                label = { Text("Clock") },
-                                selected = currentRoute == "world_clock",
-                                onClick = { navController.navigate("world_clock") { launchSingleTop = true } }
-                            )
-                            NavigationBarItem(
-                                icon = { Icon(Icons.Default.Alarm, "Alarm") },
-                                label = { Text("Alarm") },
-                                selected = currentRoute == "alarm",
-                                onClick = { navController.navigate("alarm") { launchSingleTop = true } }
-                            )
-                            NavigationBarItem(
-                                icon = { Icon(Icons.Default.Timer, "Stopwatch") },
-                                label = { Text("Stopwatch") },
-                                selected = currentRoute == "stopwatch",
-                                onClick = { navController.navigate("stopwatch") { launchSingleTop = true } }
-                            )
-                            NavigationBarItem(
-                                icon = { Icon(Icons.Default.HourglassEmpty, "Timer") },
-                                label = { Text("Timer") },
-                                selected = currentRoute == "timer",
-                                onClick = { navController.navigate("timer") { launchSingleTop = true } }
-                            )
+                        androidx.compose.foundation.layout.Column {
+                            if (currentRoute in listOf("alarm", "stopwatch", "timer")) {
+                                Text(
+                                    text = "Made by PremMotghare",
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                    fontSize = 12.sp,
+                                    color = Color.Gray
+                                )
+                            }
+                            NavigationBar(containerColor = Color.White) {
+                                NavigationBarItem(
+                                    icon = { Icon(Icons.Default.Public, "World Clock") },
+                                    label = { Text("Clock") },
+                                    selected = currentRoute == "world_clock",
+                                    onClick = { navController.navigate("world_clock") { launchSingleTop = true } }
+                                )
+                                NavigationBarItem(
+                                    icon = { Icon(Icons.Default.Alarm, "Alarm") },
+                                    label = { Text("Alarm") },
+                                    selected = currentRoute == "alarm",
+                                    onClick = { navController.navigate("alarm") { launchSingleTop = true } }
+                                )
+                                NavigationBarItem(
+                                    icon = { Icon(Icons.Default.Timer, "Stopwatch") },
+                                    label = { Text("Stopwatch") },
+                                    selected = currentRoute == "stopwatch",
+                                    onClick = { navController.navigate("stopwatch") { launchSingleTop = true } }
+                                )
+                                NavigationBarItem(
+                                    icon = { Icon(Icons.Default.HourglassEmpty, "Timer") },
+                                    label = { Text("Timer") },
+                                    selected = currentRoute == "timer",
+                                    onClick = { navController.navigate("timer") { launchSingleTop = true } }
+                                )
+                            }
                         }
                     }
                 ) { innerPadding ->
