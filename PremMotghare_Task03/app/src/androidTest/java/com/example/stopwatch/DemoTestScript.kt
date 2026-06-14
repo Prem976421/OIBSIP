@@ -15,13 +15,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class LinkedinDemoTest {
+class DemoTestScript {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Test
-    fun runLinkedinDemo() {
+    fun runDemoTest() {
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
         // 1. World Clock Section
