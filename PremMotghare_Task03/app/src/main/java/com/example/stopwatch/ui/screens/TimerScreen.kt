@@ -1,14 +1,18 @@
-package com.example.stopwatch.ui.screens
+﻿package com.example.stopwatch.ui.screens
 
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Pause
@@ -27,7 +31,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -143,49 +146,82 @@ fun TimerScreen(viewModel: TimerViewModel = viewModel()) {
 
 @Composable
 fun TimerInput(onStart: (Int, Int, Int) -> Unit) {
-    var hours by remember { mutableStateOf("") }
-    var minutes by remember { mutableStateOf("") }
-    var seconds by remember { mutableStateOf("") }
+    var hours by remember { mutableStateOf(0) }
+    var minutes by remember { mutableStateOf(0) }
+    var seconds by remember { mutableStateOf(0) }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            OutlinedTextField(
-                value = hours,
-                onValueChange = { hours = it.take(2) },
-                label = { Text("Hr") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.weight(1f)
-            )
-            OutlinedTextField(
-                value = minutes,
-                onValueChange = { minutes = it.take(2) },
-                label = { Text("Min") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.weight(1f)
-            )
-            OutlinedTextField(
-                value = seconds,
-                onValueChange = { seconds = it.take(2) },
-                label = { Text("Sec") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.weight(1f)
-            )
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        ) {
+            WheelPicker(range = 0..23, value = hours, onValueChange = { hours = it }, label = "Hr")
+            WheelPicker(range = 0..59, value = minutes, onValueChange = { minutes = it }, label = "Min")
+            WheelPicker(range = 0..59, value = seconds, onValueChange = { seconds = it }, label = "Sec")
         }
         
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(48.dp))
         
         Button(
             onClick = { 
-                val h = hours.toIntOrNull() ?: 0
-                val m = minutes.toIntOrNull() ?: 0
-                val s = seconds.toIntOrNull() ?: 0
-                if (h > 0 || m > 0 || s > 0) onStart(h, m, s)
+                if (hours > 0 || minutes > 0 || seconds > 0) onStart(hours, minutes, seconds)
             },
             colors = ButtonDefaults.buttonColors(containerColor = Primary40),
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier.fillMaxWidth(0.6f).height(56.dp)
         ) {
             Text("Start Timer", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun WheelPicker(range: IntRange, value: Int, onValueChange: (Int) -> Unit, label: String) {
+    val list = range.toList()
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = if (value in range) value - range.first else 0)
+    
+    val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
+    
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.firstVisibleItemIndex }.collect { index ->
+            val newValue = range.first + index
+            if (newValue != value) {
+                onValueChange(newValue)
+            }
+        }
+    }
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = label, fontWeight = FontWeight.SemiBold, color = Primary40, modifier = Modifier.padding(bottom = 8.dp))
+        Box(
+            modifier = Modifier
+                .width(80.dp)
+                .height(150.dp)
+                .background(Secondary80.copy(alpha = 0.3f), RoundedCornerShape(16.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            LazyColumn(
+                state = listState,
+                flingBehavior = flingBehavior,
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(vertical = 50.dp)
+            ) {
+                items(list) { item ->
+                    val isSelected = value == item
+                    Box(
+                        modifier = Modifier.height(50.dp).fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = String.format("%02d", item),
+                            fontSize = if (isSelected) 28.sp else 20.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            color = if (isSelected) Primary40 else Secondary40
+                        )
+                    }
+                }
+            }
         }
     }
 }

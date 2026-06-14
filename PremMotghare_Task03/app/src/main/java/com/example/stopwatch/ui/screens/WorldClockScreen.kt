@@ -1,4 +1,4 @@
-package com.example.stopwatch.ui.screens
+﻿package com.example.stopwatch.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,9 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,12 +22,36 @@ import com.example.stopwatch.ui.theme.*
 import com.example.stopwatch.viewmodel.CityTime
 import com.example.stopwatch.viewmodel.WorldClockViewModel
 
+data class CountryCapital(val country: String, val capital: String, val zoneId: String, val flag: String)
+
+val globalCapitals = listOf(
+    CountryCapital("Japan", "Tokyo", "Asia/Tokyo", "🇯🇵"),
+    CountryCapital("United Kingdom", "London", "Europe/London", "🇬🇧"),
+    CountryCapital("United States", "Washington D.C.", "America/New_York", "🇺🇸"),
+    CountryCapital("Australia", "Sydney", "Australia/Sydney", "🇦🇺"),
+    CountryCapital("United Arab Emirates", "Dubai", "Asia/Dubai", "🇦🇪"),
+    CountryCapital("France", "Paris", "Europe/Paris", "🇫🇷"),
+    CountryCapital("India", "New Delhi", "Asia/Kolkata", "🇮🇳"),
+    CountryCapital("Brazil", "Brasilia", "America/Sao_Paulo", "🇧🇷"),
+    CountryCapital("Canada", "Ottawa", "America/Toronto", "🇨🇦"),
+    CountryCapital("Mexico", "Mexico City", "America/Mexico_City", "🇲🇽"),
+    CountryCapital("Germany", "Berlin", "Europe/Berlin", "🇩🇪"),
+    CountryCapital("Italy", "Rome", "Europe/Rome", "🇮🇹"),
+    CountryCapital("Spain", "Madrid", "Europe/Madrid", "🇪🇸"),
+    CountryCapital("Russia", "Moscow", "Europe/Moscow", "🇷🇺"),
+    CountryCapital("China", "Beijing", "Asia/Shanghai", "🇨🇳"),
+    CountryCapital("South Korea", "Seoul", "Asia/Seoul", "🇰🇷"),
+    CountryCapital("South Africa", "Johannesburg", "Africa/Johannesburg", "🇿🇦"),
+    CountryCapital("Egypt", "Cairo", "Africa/Cairo", "🇪🇬"),
+    CountryCapital("Argentina", "Buenos Aires", "America/Argentina/Buenos_Aires", "🇦🇷")
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorldClockScreen(viewModel: WorldClockViewModel = viewModel()) {
     val cityTimes by viewModel.cityTimes.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsState()
-    val searchResults by viewModel.searchResults.collectAsState()
+    
+    var expanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -45,36 +67,37 @@ fun WorldClockScreen(viewModel: WorldClockViewModel = viewModel()) {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = { viewModel.updateSearchQuery(it) },
-            label = { Text("Search Timezone") },
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
-        )
-
-        if (searchResults.isNotEmpty()) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 200.dp)
-                    .shadow(4.dp, RoundedCornerShape(8.dp))
-                    .background(Color.White)
+        ) {
+            OutlinedTextField(
+                value = "Select Country Capital",
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                modifier = Modifier.menuAnchor().fillMaxWidth()
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
             ) {
-                items(searchResults) { zone ->
-                    Text(
-                        text = zone,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { viewModel.addZone(zone) }
-                            .padding(16.dp),
-                        fontSize = 16.sp
+                globalCapitals.forEach { item ->
+                    DropdownMenuItem(
+                        text = { Text(text = "${item.flag} ${item.country} - ${item.capital}") },
+                        onClick = {
+                            viewModel.addZone(item.zoneId)
+                            expanded = false
+                        }
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
         }
 
         LazyColumn(
+            modifier = Modifier.weight(1f).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(bottom = 100.dp)
         ) {
@@ -85,29 +108,14 @@ fun WorldClockScreen(viewModel: WorldClockViewModel = viewModel()) {
     }
 }
 
-fun getFlagEmoji(zoneId: String): String {
-    val id = zoneId.lowercase()
-    return when {
-        id.contains("tokyo") || id.contains("japan") -> "🇯🇵"
-        id.contains("london") || id.contains("europe/london") -> "🇬🇧"
-        id.contains("new_york") || id.contains("america") -> "🇺🇸"
-        id.contains("sydney") || id.contains("australia") -> "🇦🇺"
-        id.contains("dubai") || id.contains("asia/dubai") -> "🇦🇪"
-        id.contains("paris") || id.contains("france") -> "🇫🇷"
-        id.contains("calcutta") || id.contains("india") || id.contains("kolkata") -> "🇮🇳"
-        id.contains("brazil") || id.contains("sao_paulo") -> "🇧🇷"
-        id.contains("canada") || id.contains("toronto") -> "🇨🇦"
-        id.contains("mexico") -> "🇲🇽"
-        id.contains("berlin") || id.contains("germany") -> "🇩🇪"
-        id.contains("rome") || id.contains("italy") -> "🇮🇹"
-        id.contains("madrid") || id.contains("spain") -> "🇪🇸"
-        else -> "🌍"
-    }
+fun getFlagEmojiFallback(zoneId: String): String {
+    val match = globalCapitals.find { it.zoneId == zoneId }
+    return match?.flag ?: "🌍"
 }
 
 @Composable
 fun CityTimeCard(cityTime: CityTime) {
-    val flagEmoji = if (cityTime.city.isLocal) "📍" else getFlagEmoji(cityTime.city.zoneId)
+    val flagEmoji = if (cityTime.city.isLocal) "📍" else getFlagEmojiFallback(cityTime.city.zoneId)
     
     Box(
         modifier = Modifier
