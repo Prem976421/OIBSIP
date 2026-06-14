@@ -7,7 +7,7 @@ This repository contains the projects I have developed as part of the internship
 
 ## Projects Overview
 
-### [Task 1: Unit Converter App](./PremMotghare_Task01)
+### [Task 1: Unit Converter App](./PremMotghare_Task01(Unit%20Converter))
 A versatile and highly responsive Unit Converter App designed to seamlessly convert values across multiple measurement categories.
 
 **Key Features:**
@@ -17,7 +17,7 @@ A versatile and highly responsive Unit Converter App designed to seamlessly conv
 - **Swap Functionality:** Instantly swap the "From" and "To" units with a single tap.
 - **Clean Architecture:** Built using Compose state management, keeping the UI layout completely separate from the core conversion logic.
 
-### [Task 2: Calculator App](./Task2-CalculatorApp)
+### [Task 2: Calculator App](./PremMotghare_Task02(Calculator%20App))
 A modern, fully-functional Calculator App featuring both basic arithmetic and advanced scientific calculations.
 
 **Key Features:**
@@ -26,6 +26,16 @@ A modern, fully-functional Calculator App featuring both basic arithmetic and ad
 - **Robust State Management:** Powered by MVVM architecture and `StateFlow` to flawlessly manage live expressions, results, and calculation history.
 - **Dynamic Layout:** Features a heavily optimized, responsive Compose layout grid utilizing adaptive weights, ensuring that the keypad scales beautifully to any screen dimension without overlapping.
 - **Automated Testing & CI/CD:** Includes automated Espresso/Compose UI scripts for screen-recording simulations, and GitHub Actions workflows for continuous integration.
+
+### [Task 3: Stopwatch](./PremMotghare_Task03(Stopwatch))
+A modern, full-featured time management app containing a World Clock, Alarms, a Stopwatch, and a Timer.
+
+**Key Features:**
+- **World Clock:** Dynamic searchable dropdown to view the local time of major country capitals with flag emojis.
+- **Smart Alarms:** Set exact, precision alarms using native Android `TimePickerDialog` with robust Android 14+ background permission handling.
+- **Stopwatch with Laps:** A beautifully animated stopwatch that tracks milliseconds and records laps effortlessly.
+- **Custom Timer:** Smooth vertical scrolling "Wheel Picker" built completely from scratch using Compose `LazyColumn` for seamless hour, minute, and second selection.
+- **Aesthetic UI:** Fully built in Jetpack Compose utilizing Material Design 3 and a custom 4-color animated sweeping gradient.
 
 ---
 
@@ -58,7 +68,7 @@ If you'd like to test out the applications on your own machine, follow these sim
    - Launch Android Studio.
    - Click on **Open**.
    - Navigate to the cloned repository directory.
-   - **Important:** Do *not* open the root repository folder. Instead, specifically select either the **`PremMotghare_Task01`** folder (for Task 1) or the **`Task2-CalculatorApp`** folder (for Task 2) to open them as independent Android projects.
+   - **Important:** Do *not* open the root repository folder. Instead, specifically select either **`PremMotghare_Task01(Unit Converter)`**, **`PremMotghare_Task02(Calculator App)`**, or **`PremMotghare_Task03(Stopwatch)`** to open them as independent Android projects.
 
 3. **Sync Gradle:**
    Once opened, Android Studio will automatically start syncing the dependencies. Wait for the loading bar at the bottom to finish. (If it asks you to sync, click the "Sync Project with Gradle Files" elephant icon in the top toolbar).
