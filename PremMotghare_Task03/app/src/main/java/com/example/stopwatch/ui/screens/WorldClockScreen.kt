@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -49,7 +48,7 @@ fun WorldClockScreen(viewModel: WorldClockViewModel = viewModel()) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { viewModel.updateSearchQuery(it) },
-            label = { Text("Search Timezone (e.g. Tokyo)") },
+            label = { Text("Search Timezone") },
             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
         )
 
@@ -86,26 +85,29 @@ fun WorldClockScreen(viewModel: WorldClockViewModel = viewModel()) {
     }
 }
 
-fun getFlagColors(zoneId: String): List<Color> {
+fun getFlagEmoji(zoneId: String): String {
     val id = zoneId.lowercase()
     return when {
-        id.contains("tokyo") || id.contains("japan") -> listOf(Color.White, GoogleRed, Color.White)
-        id.contains("london") || id.contains("europe") -> listOf(GoogleBlue, Color.White, GoogleRed)
-        id.contains("new_york") || id.contains("america") -> listOf(GoogleRed, Color.White, GoogleBlue)
-        id.contains("sydney") || id.contains("australia") -> listOf(GoogleBlue, Color.White, GoogleRed)
-        id.contains("dubai") || id.contains("asia") -> listOf(GoogleGreen, Color.White, Color.Black)
-        id.contains("paris") || id.contains("france") -> listOf(GoogleBlue, Color.White, GoogleRed)
-        id.contains("calcutta") || id.contains("india") || id.contains("kolkata") -> listOf(Color(0xFFFF9933), Color.White, GoogleGreen)
-        id.contains("brazil") || id.contains("sao_paulo") -> listOf(GoogleGreen, GoogleYellow, GoogleBlue)
-        id.contains("canada") || id.contains("toronto") -> listOf(GoogleRed, Color.White, GoogleRed)
-        id.contains("mexico") -> listOf(GoogleGreen, Color.White, GoogleRed)
-        else -> listOf(GoogleBlue, GoogleRed, GoogleYellow, GoogleGreen) // Google Colors default
+        id.contains("tokyo") || id.contains("japan") -> "????"
+        id.contains("london") || id.contains("europe/london") -> "????"
+        id.contains("new_york") || id.contains("america") -> "????"
+        id.contains("sydney") || id.contains("australia") -> "????"
+        id.contains("dubai") || id.contains("asia/dubai") -> "????"
+        id.contains("paris") || id.contains("france") -> "????"
+        id.contains("calcutta") || id.contains("india") || id.contains("kolkata") -> "????"
+        id.contains("brazil") || id.contains("sao_paulo") -> "????"
+        id.contains("canada") || id.contains("toronto") -> "????"
+        id.contains("mexico") -> "????"
+        id.contains("berlin") || id.contains("germany") -> "????"
+        id.contains("rome") || id.contains("italy") -> "????"
+        id.contains("madrid") || id.contains("spain") -> "????"
+        else -> "??"
     }
 }
 
 @Composable
 fun CityTimeCard(cityTime: CityTime) {
-    val flagColors = getFlagColors(cityTime.city.zoneId)
+    val flagEmoji = if (cityTime.city.isLocal) "??" else getFlagEmoji(cityTime.city.zoneId)
     
     Box(
         modifier = Modifier
@@ -114,15 +116,6 @@ fun CityTimeCard(cityTime: CityTime) {
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
     ) {
-        // Subtle flag colored border using a box at the bottom
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(8.dp)
-                .align(Alignment.BottomCenter)
-                .background(Brush.horizontalGradient(flagColors))
-        )
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -131,12 +124,19 @@ fun CityTimeCard(cityTime: CityTime) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(
-                    text = cityTime.city.name,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Primary40
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = flagEmoji,
+                        fontSize = 24.sp,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = cityTime.city.name,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Primary40
+                    )
+                }
                 Text(
                     text = cityTime.timeDiffString,
                     fontSize = 14.sp,

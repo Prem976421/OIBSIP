@@ -6,9 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
-    primary = GoogleBlue,
-    secondary = GoogleRed,
-    tertiary = GoogleYellow,
+    primary = DeepIndigo,
+    secondary = SoftTeal,
+    tertiary = SlateBlue,
     background = SurfaceLight,
     surface = Color.White,
     onPrimary = Color.White,

@@ -86,10 +86,12 @@ fun StopwatchScreen(viewModel: StopwatchViewModel = viewModel()) {
                     style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
                 )
 
+                val gradientBrush = Brush.sweepGradient(listOf(Tertiary40, Primary40, Primary80, Tertiary40))
+
                 if (isPlaying) {
                     rotate(rotation) {
                         drawArc(
-                            brush = Brush.sweepGradient(listOf(GoogleBlue, GoogleRed, GoogleYellow, GoogleGreen, GoogleBlue)),
+                            brush = gradientBrush,
                             startAngle = -90f,
                             sweepAngle = 360f,
                             useCenter = false,
@@ -98,7 +100,7 @@ fun StopwatchScreen(viewModel: StopwatchViewModel = viewModel()) {
                     }
                 } else if (timeMillis > 0) {
                     drawArc(
-                        brush = Brush.sweepGradient(listOf(GoogleBlue, GoogleRed, GoogleYellow, GoogleGreen, GoogleBlue)),
+                        brush = gradientBrush,
                         startAngle = -90f,
                         sweepAngle = 360f,
                         useCenter = false,
@@ -200,13 +202,13 @@ fun StopwatchScreen(viewModel: StopwatchViewModel = viewModel()) {
 @Composable
 fun LapItem(lap: Lap, isFastest: Boolean, isSlowest: Boolean, onDelete: () -> Unit) {
     val highlightColor = when {
-        isFastest -> GoogleGreen
-        isSlowest -> GoogleRed
+        isFastest -> Tertiary40
+        isSlowest -> Color(0xFFE53935)
         else -> Secondary40
     }
 
     val backgroundColor = when {
-        isFastest -> Color(0xFFE8F5E9)
+        isFastest -> Color(0xFFE0F2F1)
         isSlowest -> Color(0xFFFFEBEE)
         else -> Color.White
     }

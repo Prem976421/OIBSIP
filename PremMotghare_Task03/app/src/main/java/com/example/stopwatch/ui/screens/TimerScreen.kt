@@ -83,7 +83,7 @@ fun TimerScreen(viewModel: TimerViewModel = viewModel()) {
                     )
 
                     drawArc(
-                        brush = Brush.sweepGradient(listOf(GoogleBlue, GoogleRed, GoogleYellow, GoogleGreen, GoogleBlue)),
+                        brush = Brush.sweepGradient(listOf(Tertiary40, Primary40, Primary80, Tertiary40)),
                         startAngle = -90f,
                         sweepAngle = animatedProgress * 360f,
                         useCenter = false,
