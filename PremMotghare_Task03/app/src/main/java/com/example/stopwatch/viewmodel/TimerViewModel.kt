@@ -1,6 +1,10 @@
-package com.example.stopwatch.viewmodel
+﻿package com.example.stopwatch.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import android.media.AudioAttributes
+import android.media.RingtoneManager
+import android.os.Build
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -10,7 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class TimerViewModel : ViewModel() {
+class TimerViewModel(private val app: Application) : AndroidViewModel(app) {
 
     private val _totalTimeMillis = MutableStateFlow(0L)
     val totalTimeMillis: StateFlow<Long> = _totalTimeMillis.asStateFlow()
@@ -34,6 +38,33 @@ class TimerViewModel : ViewModel() {
         if (_isPlaying.value) pause() else start()
     }
 
+    private fun playTimerFinishedSound() {
+        viewModelScope.launch {
+            try {
+                val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+                    ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
+                val ringtone = RingtoneManager.getRingtone(app, uri)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    ringtone.isLooping = true
+                }
+                ringtone.audioAttributes = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+                
+                ringtone.play()
+                
+                delay(10000)
+                
+                if (ringtone.isPlaying) {
+                    ringtone.stop()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     private fun start() {
         if (_remainingTimeMillis.value <= 0) return
         
@@ -50,6 +81,7 @@ class TimerViewModel : ViewModel() {
                 if (currentRemaining <= 0) {
                     _remainingTimeMillis.value = 0
                     _isPlaying.value = false
+                    playTimerFinishedSound()
                     break
                 } else {
                     _remainingTimeMillis.value = currentRemaining
