@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                         androidx.compose.foundation.layout.Column {
                             if (currentRoute in listOf("alarm", "stopwatch", "timer")) {
                                 Text(
-                                    text = "Made by PremMotghare",
+                                    text = "Made by Prem976421",
                                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                                     fontSize = 12.sp,
