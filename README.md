@@ -1,4 +1,4 @@
-﻿# Oasis Infobyte Summer Internship Program (OIBSIP)
+# Oasis Infobyte Summer Internship Program (OIBSIP)
 
 Welcome to my repository for the **Oasis Infobyte Android App Development Internship**. 
 This repository contains the projects I have developed as part of the internship tasks, built entirely from scratch using **Kotlin** and modern **Jetpack Compose**.
@@ -39,17 +39,17 @@ A modern, full-featured time management app containing a World Clock, Alarms, a 
 
 ---
 
-## Tech Stack & Architecture ðŸš€
+## Tech Stack & Architecture 🚀
 
-This repository represents a deep dive into modern Android development practices, emphasizing clean architecture, reactive programming, and buttery-smooth user interfaces.
+This repository represents a deep dive into modern Android development practices across all three projects, emphasizing clean architecture, reactive programming, and buttery-smooth user interfaces.
 
-- **Kotlin:** The entire codebase is written in Kotlin, taking full advantage of its null safety, concise syntax, and powerful coroutines.
-- **Jetpack Compose:** Completely moved away from legacy XML layouts. Every screen, animation, and custom UI component (like the infinite-scrolling Timer wheel) is built declaratively using Jetpack Compose, ensuring highly reusable and modular UI code.
-- **Material Design 3 (Material You):** Implemented the latest Google design language. The UI adapts dynamically with modern color palettes, elevated surfaces, and rounded aesthetics for a premium user experience.
-- **MVVM Architecture (Model-View-ViewModel):** A strict separation of concerns. The ViewModels handle all complex business logic (such as background timer ticks or scientific math calculations), keeping the Compose UI layers lightweight and purely reactive.
+- **Kotlin:** The entire codebase is written in Kotlin, taking full advantage of its null safety, concise syntax, and powerful functional programming capabilities.
+- **Jetpack Compose:** Completely moved away from legacy XML layouts. Built declarative, highly reusable UI components across all apps, ranging from responsive Calculator adaptive grids to the Unit Converter's modal bottom sheets, and the Stopwatch's infinite-scrolling Timer wheel.
+- **Material Design 3 (Material You):** Implemented the latest Google design language. The UI adapts dynamically with modern color palettes, elevated surfaces, and rounded aesthetics for a premium user experience across every project.
+- **MVVM Architecture (Model-View-ViewModel):** A strict separation of concerns. The ViewModels handle all complex business logic—whether calculating advanced scientific expressions, mapping real-time unit conversions, or managing background timer ticks—keeping the Compose UI layers lightweight and purely reactive.
 - **StateFlow & Coroutines:** Leveraged Kotlin Coroutines for lightweight background threading and `StateFlow` to broadcast state changes flawlessly from the ViewModel to the UI, guaranteeing that the interface is always perfectly in sync with the data.
 - **System APIs & Permissions:** Integrated deeply with native Android APIs, including `AlarmManager` for scheduling precise system-level alarms, `RingtoneManager` for bypassing silent notification channels, and robust handling of Android 13/14+ runtime permissions.
-- **Automated UI Testing:** Engineered resilient, automated test scripts using `UiAutomator` and Jetpack Compose Testing libraries to programmatically navigate the app, handle system dialogs, and ensure zero regressions across major features.
+- **Automated UI Testing & CI/CD:** Engineered resilient, automated test scripts using `Espresso`, `UiAutomator`, and Jetpack Compose Testing libraries to programmatically navigate the apps. Integrated GitHub Actions workflows for continuous integration (CI/CD) to ensure zero regressions.
 
 ---
 
