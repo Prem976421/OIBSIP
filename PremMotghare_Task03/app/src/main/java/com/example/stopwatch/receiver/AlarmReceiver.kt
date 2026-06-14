@@ -1,4 +1,4 @@
-﻿package com.example.stopwatch.receiver
+package com.example.stopwatch.receiver
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val label = intent.getStringExtra("ALARM_LABEL") ?: "Wake Up"
-        val channelId = "alarm_channel"
+        val channelId = "alarm_channel_silent"
         
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         
@@ -31,11 +31,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "Channel for Alarm notifications"
-                setSound(uri, AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_ALARM)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build()
-                )
+                setSound(null, null)
                 enableVibration(true)
             }
             notificationManager.createNotificationChannel(channel)
