@@ -1,4 +1,5 @@
 [versions]
+uiautomator = "2.3.0"
 agp = "9.2.1"
 coreKtx = "1.18.0"
 junit = "4.13.2"
@@ -13,6 +14,7 @@ navigationCompose = "2.9.0"
 materialIconsExtended = "1.7.8"
 
 [libraries]
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -34,3 +36,4 @@ androidx-material-icons-extended = { group = "androidx.compose.material", name =
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
