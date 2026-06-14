@@ -123,4 +123,12 @@ class StopwatchViewModel : ViewModel() {
         _fastestLapId.value = fastest?.id
         _slowestLapId.value = slowest?.id
     }
+
+    fun deleteLap(lapId: Int) {
+        _laps.update { currentLaps ->
+            val updatedLaps = currentLaps.filter { it.id != lapId }
+            updateLapHighlights(updatedLaps)
+            updatedLaps
+        }
+    }
 }

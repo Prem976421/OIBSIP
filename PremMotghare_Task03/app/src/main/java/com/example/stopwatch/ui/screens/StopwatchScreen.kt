@@ -3,10 +3,9 @@ package com.example.stopwatch.ui.screens
 import android.content.Intent
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,15 +14,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Flag
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +25,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontFamily
@@ -39,13 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.stopwatch.ui.theme.Primary40
-import com.example.stopwatch.ui.theme.Primary80
-import com.example.stopwatch.ui.theme.Secondary40
-import com.example.stopwatch.ui.theme.Secondary80
-import com.example.stopwatch.ui.theme.SurfaceLight
-import com.example.stopwatch.ui.theme.Tertiary40
-import com.example.stopwatch.ui.theme.Tertiary80
+import com.example.stopwatch.ui.theme.*
 import com.example.stopwatch.viewmodel.Lap
 import com.example.stopwatch.viewmodel.StopwatchViewModel
 
@@ -65,23 +53,6 @@ fun StopwatchScreen(viewModel: StopwatchViewModel = viewModel()) {
         view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
     }
 
-    fun shareLaps() {
-        if (laps.isEmpty()) return
-        val shareText = buildString {
-            appendLine("My Stopwatch Laps:")
-            appendLine("Total Time: ${formatTime(timeMillis)}")
-            appendLine("-------------------")
-            laps.reversed().forEach { lap ->
-                appendLine("Lap ${lap.id}: ${formatTime(lap.lapTime)} (Total: ${formatTime(lap.totalTime)})")
-            }
-        }
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, shareText)
-        }
-        context.startActivity(Intent.createChooser(intent, "Share Laps"))
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -89,41 +60,24 @@ fun StopwatchScreen(viewModel: StopwatchViewModel = viewModel()) {
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Top Bar with Share
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            if (laps.isNotEmpty()) {
-                IconButton(onClick = { 
-                    performHaptic()
-                    shareLaps() 
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.Share,
-                        contentDescription = "Share",
-                        tint = Secondary40
-                    )
-                }
-            }
-        }
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Timer Display with Circular Progress
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.size(300.dp)
         ) {
-            // Circular Progress Animation
-            val progress = (timeMillis % 60000) / 60000f
-            val animatedProgress by animateFloatAsState(
-                targetValue = progress,
-                animationSpec = tween(durationMillis = 100), label = "progress"
+            val infiniteTransition = rememberInfiniteTransition(label = "infinite")
+            val rotation by infiniteTransition.animateFloat(
+                initialValue = 0f,
+                targetValue = 360f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(3000, easing = LinearEasing),
+                    repeatMode = RepeatMode.Restart
+                ),
+                label = "rotation"
             )
 
             Canvas(modifier = Modifier.fillMaxSize()) {
-                // Background Track
                 drawArc(
                     color = Secondary80,
                     startAngle = -90f,
@@ -132,17 +86,25 @@ fun StopwatchScreen(viewModel: StopwatchViewModel = viewModel()) {
                     style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
                 )
 
-                // Foreground Animated Progress (Gradient)
-                val gradient = Brush.sweepGradient(
-                    colors = listOf(Primary40, Tertiary40, Primary40)
-                )
-                drawArc(
-                    brush = gradient,
-                    startAngle = -90f,
-                    sweepAngle = animatedProgress * 360f,
-                    useCenter = false,
-                    style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
-                )
+                if (isPlaying) {
+                    rotate(rotation) {
+                        drawArc(
+                            brush = Brush.sweepGradient(listOf(GoogleBlue, GoogleRed, GoogleYellow, GoogleGreen, GoogleBlue)),
+                            startAngle = -90f,
+                            sweepAngle = 360f,
+                            useCenter = false,
+                            style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
+                        )
+                    }
+                } else if (timeMillis > 0) {
+                    drawArc(
+                        brush = Brush.sweepGradient(listOf(GoogleBlue, GoogleRed, GoogleYellow, GoogleGreen, GoogleBlue)),
+                        startAngle = -90f,
+                        sweepAngle = 360f,
+                        useCenter = false,
+                        style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
+                    )
+                }
             }
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -154,10 +116,9 @@ fun StopwatchScreen(viewModel: StopwatchViewModel = viewModel()) {
                     color = Primary40
                 )
                 
-                // Current Lap Time
                 if (laps.isNotEmpty() || currentLapTimeMillis > 0) {
                     Text(
-                        text = "Lap: ${formatTime(currentLapTimeMillis)}",
+                        text = "Lap: ",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Medium,
                         fontFamily = FontFamily.Monospace,
@@ -170,46 +131,25 @@ fun StopwatchScreen(viewModel: StopwatchViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(48.dp))
 
-        // Controls
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Reset Button
             IconButton(
-                onClick = {
-                    performHaptic()
-                    viewModel.reset()
-                },
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(CircleShape)
-                    .background(Secondary80)
+                onClick = { performHaptic(); viewModel.reset() },
+                modifier = Modifier.size(64.dp).clip(CircleShape).background(Secondary80)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = "Reset",
-                    tint = Secondary40,
-                    modifier = Modifier.size(32.dp)
-                )
+                Icon(Icons.Default.Refresh, "Reset", tint = Secondary40, modifier = Modifier.size(32.dp))
             }
 
-            // Play/Pause Button
             IconButton(
-                onClick = {
-                    performHaptic()
-                    viewModel.togglePlayPause()
-                },
+                onClick = { performHaptic(); viewModel.togglePlayPause() },
                 modifier = Modifier
                     .size(88.dp)
                     .shadow(12.dp, CircleShape)
                     .clip(CircleShape)
-                    .background(
-                        Brush.linearGradient(
-                            colors = listOf(Primary40, Primary80)
-                        )
-                    )
+                    .background(Brush.linearGradient(listOf(Primary40, Primary80)))
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
@@ -219,53 +159,37 @@ fun StopwatchScreen(viewModel: StopwatchViewModel = viewModel()) {
                 )
             }
 
-            // Lap Button
             IconButton(
-                onClick = {
-                    performHaptic()
-                    viewModel.lap()
-                },
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(CircleShape)
-                    .background(Secondary80)
+                onClick = { performHaptic(); viewModel.lap() },
+                modifier = Modifier.size(64.dp).clip(CircleShape).background(Secondary80)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Flag,
-                    contentDescription = "Lap",
-                    tint = Tertiary40,
-                    modifier = Modifier.size(32.dp)
-                )
+                Icon(Icons.Default.Flag, "Lap", tint = Tertiary40, modifier = Modifier.size(32.dp))
             }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Laps List
         if (laps.isNotEmpty()) {
             Text(
                 text = "Laps",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Secondary40,
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(bottom = 16.dp, start = 8.dp)
+                modifier = Modifier.align(Alignment.Start).padding(bottom = 16.dp, start = 8.dp)
             )
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(bottom = 16.dp)
+                contentPadding = PaddingValues(bottom = 100.dp)
             ) {
                 items(laps, key = { it.id }) { lap ->
-                    AnimatedVisibility(
-                        visible = true,
-                        enter = slideInVertically() + fadeIn()
-                    ) {
+                    AnimatedVisibility(visible = true, enter = slideInVertically() + fadeIn()) {
                         val isFastest = lap.id == fastestLapId
                         val isSlowest = lap.id == slowestLapId
-                        LapItem(lap = lap, isFastest = isFastest, isSlowest = isSlowest)
+                        LapItem(lap = lap, isFastest = isFastest, isSlowest = isSlowest) {
+                            viewModel.deleteLap(lap.id)
+                        }
                     }
                 }
             }
@@ -274,10 +198,10 @@ fun StopwatchScreen(viewModel: StopwatchViewModel = viewModel()) {
 }
 
 @Composable
-fun LapItem(lap: Lap, isFastest: Boolean, isSlowest: Boolean) {
+fun LapItem(lap: Lap, isFastest: Boolean, isSlowest: Boolean, onDelete: () -> Unit) {
     val highlightColor = when {
-        isFastest -> Color(0xFF4CAF50) // Green
-        isSlowest -> Color(0xFFF44336) // Red
+        isFastest -> GoogleGreen
+        isSlowest -> GoogleRed
         else -> Secondary40
     }
 
@@ -297,28 +221,33 @@ fun LapItem(lap: Lap, isFastest: Boolean, isSlowest: Boolean) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = "Lap ${lap.id}",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            color = highlightColor
-        )
-        
-        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "+${formatTime(lap.lapTime, includeMillis = true)}",
-                fontSize = 16.sp,
-                color = highlightColor,
-                fontWeight = if (isFastest || isSlowest) FontWeight.Bold else FontWeight.Normal,
-                fontFamily = FontFamily.Monospace
-            )
-            Text(
-                text = formatTime(lap.totalTime, includeMillis = true),
+                text = "Lap ",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Primary40,
-                fontFamily = FontFamily.Monospace
+                color = highlightColor
             )
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.padding(top = 4.dp)) {
+                Text(
+                    text = "+",
+                    fontSize = 16.sp,
+                    color = highlightColor,
+                    fontWeight = if (isFastest || isSlowest) FontWeight.Bold else FontWeight.Normal,
+                    fontFamily = FontFamily.Monospace
+                )
+                Text(
+                    text = formatTime(lap.totalTime, includeMillis = true),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Primary40,
+                    fontFamily = FontFamily.Monospace
+                )
+            }
+        }
+        
+        IconButton(onClick = onDelete) {
+            Icon(Icons.Default.Delete, contentDescription = "Delete Lap", tint = Secondary40)
         }
     }
 }
@@ -327,7 +256,7 @@ fun formatTime(timeMillis: Long, includeMillis: Boolean = true): String {
     val totalSeconds = timeMillis / 1000
     val minutes = totalSeconds / 60
     val seconds = totalSeconds % 60
-    val millis = (timeMillis % 1000) / 10 // Get hundredths of a second
+    val millis = (timeMillis % 1000) / 10
 
     return if (includeMillis) {
         String.format("%02d:%02d.%02d", minutes, seconds, millis)

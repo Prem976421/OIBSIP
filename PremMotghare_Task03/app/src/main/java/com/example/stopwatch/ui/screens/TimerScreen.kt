@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Pause
@@ -26,15 +27,11 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.stopwatch.ui.theme.Primary40
-import com.example.stopwatch.ui.theme.Primary80
-import com.example.stopwatch.ui.theme.Secondary40
-import com.example.stopwatch.ui.theme.Secondary80
-import com.example.stopwatch.ui.theme.SurfaceLight
-import com.example.stopwatch.ui.theme.Tertiary40
+import com.example.stopwatch.ui.theme.*
 import com.example.stopwatch.viewmodel.TimerViewModel
 
 @Composable
@@ -64,9 +61,7 @@ fun TimerScreen(viewModel: TimerViewModel = viewModel()) {
                 modifier = Modifier.padding(bottom = 48.dp)
             )
             
-            TimerInput { h, m, s ->
-                viewModel.setTime(h, m, s)
-            }
+            TimerInput { h, m, s -> viewModel.setTime(h, m, s) }
         } else {
             Box(
                 contentAlignment = Alignment.Center,
@@ -88,7 +83,7 @@ fun TimerScreen(viewModel: TimerViewModel = viewModel()) {
                     )
 
                     drawArc(
-                        brush = Brush.sweepGradient(listOf(Tertiary40, Primary40, Tertiary40)),
+                        brush = Brush.sweepGradient(listOf(GoogleBlue, GoogleRed, GoogleYellow, GoogleGreen, GoogleBlue)),
                         startAngle = -90f,
                         sweepAngle = animatedProgress * 360f,
                         useCenter = false,
@@ -148,18 +143,49 @@ fun TimerScreen(viewModel: TimerViewModel = viewModel()) {
 
 @Composable
 fun TimerInput(onStart: (Int, Int, Int) -> Unit) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        val options = listOf(1 to "1 Min", 5 to "5 Min", 10 to "10 Min", 30 to "30 Min")
+    var hours by remember { mutableStateOf("") }
+    var minutes by remember { mutableStateOf("") }
+    var seconds by remember { mutableStateOf("") }
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            OutlinedTextField(
+                value = hours,
+                onValueChange = { hours = it.take(2) },
+                label = { Text("Hr") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.weight(1f)
+            )
+            OutlinedTextField(
+                value = minutes,
+                onValueChange = { minutes = it.take(2) },
+                label = { Text("Min") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.weight(1f)
+            )
+            OutlinedTextField(
+                value = seconds,
+                onValueChange = { seconds = it.take(2) },
+                label = { Text("Sec") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.weight(1f)
+            )
+        }
         
-        options.forEach { (mins, label) ->
-            Button(
-                onClick = { onStart(0, mins, 0) },
-                colors = ButtonDefaults.buttonColors(containerColor = Primary40),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth(0.6f).height(56.dp)
-            ) {
-                Text(label, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            }
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        Button(
+            onClick = { 
+                val h = hours.toIntOrNull() ?: 0
+                val m = minutes.toIntOrNull() ?: 0
+                val s = seconds.toIntOrNull() ?: 0
+                if (h > 0 || m > 0 || s > 0) onStart(h, m, s)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Primary40),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.fillMaxWidth(0.6f).height(56.dp)
+        ) {
+            Text("Start Timer", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
